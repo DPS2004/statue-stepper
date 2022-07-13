@@ -10,6 +10,10 @@ public class Movement : MonoBehaviour
     public float hSpeed = 100;
     public float jForce = 120;
 
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask groundMask;
+    float groundDistance = 0.2f;
+
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();
@@ -17,17 +21,21 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+
         checkInput();
     }
 
     void checkInput()
     {
         hMovement = Input.GetAxisRaw("Horizontal");
-        rb.AddForce(hMovement * hSpeed, rb.velocity.y, 0);
+        rb.AddForce(hMovement * hSpeed, 0, 0);
 
         if (Input.GetButtonDown("Jump"))
         {
             rb.AddForce(transform.up * jForce);
+            isGrounded = false;
         }
 
         if(Input.GetButtonDown("Switch"))
